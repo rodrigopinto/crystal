@@ -3,7 +3,7 @@ require "xml"
 
 private def build_report
   String.build do |io|
-    formatter = Spec::TAPFormatter.new(io)
+    formatter = Spec::Formatters::TAPFormatter.new(io)
     yield formatter
     formatter.finish
   end
@@ -17,7 +17,7 @@ private def exception_with_backtrace(msg)
   end
 end
 
-describe Spec::TAPFormatter do
+describe Spec::Formatters::TAPFormatter do
   it "reports successful results" do
     output = build_report do |f|
       f.report Spec::Result.new(:success, "should do something", "spec/some_spec.cr", 33, nil, nil)

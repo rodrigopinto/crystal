@@ -1,5 +1,5 @@
 # :nodoc:
-class Spec::TAPFormatter < Spec::Formatter
+class Spec::Formatters::TAPFormatter < Spec::Formatter
   @counter = 0
 
   def report(result)

@@ -89,7 +89,7 @@ OptionParser.parse do |opts|
     end
   end
   opts.on("--junit_output OUTPUT_DIR", "generate JUnit XML output") do |output_dir|
-    junit_formatter = Spec::JUnitFormatter.file(output_dir)
+    junit_formatter = Spec::Formatters::JUnitFormatter.file(output_dir)
     Spec.add_formatter(junit_formatter)
   end
   opts.on("--help", "show this help") do |pattern|
@@ -100,7 +100,7 @@ OptionParser.parse do |opts|
     Spec.override_default_formatter(Spec::VerboseFormatter.new)
   end
   opts.on("--tap", "Generate TAP output (Test Anything Protocol)") do
-    Spec.override_default_formatter(Spec::TAPFormatter.new)
+    Spec.override_default_formatter(Spec::Formatters::TAPFormatter.new)
   end
   opts.on("--no-color", "Disable colored output") do
     Spec.use_colors = false

@@ -207,4 +207,4 @@ module Spec
   end
 end
 
-require "./*"
+require "./**"

@@ -122,7 +122,7 @@ end
 
 private def build_report
   output = String::Builder.new
-  formatter = Spec::JUnitFormatter.new(output)
+  formatter = Spec::Formatters::JUnitFormatter.new(output)
   yield formatter
   formatter.finish
   output.to_s

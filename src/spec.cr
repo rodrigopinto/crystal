@@ -97,7 +97,7 @@ OptionParser.parse do |opts|
     exit
   end
   opts.on("-v", "--verbose", "verbose output") do
-    Spec.override_default_formatter(Spec::VerboseFormatter.new)
+    Spec.override_default_formatter(Spec::Formatters::VerboseFormatter.new)
   end
   opts.on("--tap", "Generate TAP output (Test Anything Protocol)") do
     Spec.override_default_formatter(Spec::Formatters::TAPFormatter.new)
@@ -115,7 +115,7 @@ unless ARGV.empty?
 end
 
 if ENV["SPEC_VERBOSE"]? == "1"
-  Spec.override_default_formatter(Spec::VerboseFormatter.new)
+  Spec.override_default_formatter(Spec::Formatters::VerboseFormatter.new)
 end
 
 Spec.add_split_filter ENV["SPEC_SPLIT"]?

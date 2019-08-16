@@ -1,19 +1,14 @@
 require "spec"
 require "xml"
+require "./formatter_spec_helper"
+
+include FormatterSpecHelper
 
 private def build_report
   String.build do |io|
     formatter = Spec::Formatters::TAPFormatter.new(io)
     yield formatter
     formatter.finish
-  end
-end
-
-private def exception_with_backtrace(msg)
-  begin
-    raise Exception.new(msg)
-  rescue e
-    e
   end
 end
 

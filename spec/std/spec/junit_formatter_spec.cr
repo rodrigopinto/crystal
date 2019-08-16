@@ -1,7 +1,18 @@
 require "spec"
 require "xml"
+require "./formatter_spec_helper"
 
-describe "JUnit Formatter" do
+include FormatterSpecHelper
+
+private def build_report
+  String.build do |io|
+    formatter = Spec::Formatters::JUnitFormatter.new(io)
+    yield formatter
+    formatter.finish
+  end
+end
+
+describe Spec::Formatters::JUnitFormatter do
   it "reports successful results" do
     output = build_report do |f|
       f.report Spec::Result.new(:success, "should do something", "spec/some_spec.cr", 33, nil, nil)
@@ -117,21 +128,5 @@ describe "JUnit Formatter" do
 
     backtrace = xml.xpath_string("string(//testsuite/testcase[1]/error/text())")
     backtrace.should eq(cause.backtrace.join('\n'))
-  end
-end
-
-private def build_report
-  output = String::Builder.new
-  formatter = Spec::Formatters::JUnitFormatter.new(output)
-  yield formatter
-  formatter.finish
-  output.to_s
-end
-
-private def exception_with_backtrace(msg)
-  begin
-    raise Exception.new(msg)
-  rescue e
-    e
   end
 end

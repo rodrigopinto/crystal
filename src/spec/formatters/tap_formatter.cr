@@ -4,12 +4,10 @@ class Spec::Formatters::TAPFormatter < Spec::Formatter
 
   def report(result)
     case result.kind
-    when :success
+    when :success, :pending
       @io << "ok"
     when :fail, :error
       @io << "not ok"
-    when :pending
-      @io << "ok"
     end
 
     @counter += 1

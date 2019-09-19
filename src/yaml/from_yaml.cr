@@ -306,6 +306,22 @@ module YAML::ArrayConverter(Converter)
   end
 end
 
+module YAML::HashValueConverter(Converter)
+  def self.from_yaml(ctx : YAML::ParseContext, node : YAML::Nodes::Node)
+    unless node.is_a?(YAML::Nodes::Mapping)
+      node.raise "Expected mapping, not #{node.class}"
+    end
+
+    hash = Hash(String, typeof(Converter.from_yaml(ctx, node))).new
+
+    YAML::Schema::Core.each(node) do |key, value|
+      hash[String.new(ctx, key)] = Converter.from_yaml(ctx, value)
+    end
+
+    hash
+  end
+end
+
 struct Slice
   def self.new(ctx : YAML::ParseContext, node : YAML::Nodes::Node)
     {% if T != UInt8 %}

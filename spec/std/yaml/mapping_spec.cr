@@ -102,6 +102,12 @@ private class YAMLWithArrayConverter
   })
 end
 
+private class YAMLWithHashValueConverter
+  YAML.mapping({
+    values: {type: Hash(String, Time), converter: YAML::HashValueConverter(Time::EpochConverter)},
+  })
+end
+
 private class YAMLWithPresence
   YAML.mapping({
     first_name: {type: String?, presence: true, nilable: true},
@@ -499,6 +505,14 @@ describe "YAML mapping" do
     yaml.values.should be_a(Array(Time))
     yaml.values.should eq([Time.unix(1459859781), Time.unix(1567628762)])
     yaml.to_yaml.should eq(%(---\nvalues:\n- 1459859781\n- 1567628762\n))
+  end
+
+  it "uses YAML::HashValueConverter" do
+    string = %({"values":{"foo":1459859781,"bar":1567628762}})
+    yaml = YAMLWithHashValueConverter.from_yaml(string)
+    yaml.values.should be_a(Hash(String, Time))
+    yaml.values.should eq({"foo" => Time.unix(1459859781), "bar" => Time.unix(1567628762)})
+    yaml.to_yaml.should eq("---\nvalues:\n  foo: 1459859781\n  bar: 1567628762\n")
   end
 
   describe "parses YAML with presence markers" do

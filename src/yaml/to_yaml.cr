@@ -156,6 +156,33 @@ module YAML::ArrayConverter(Converter)
   end
 end
 
+# Converter to be used with `YAML.mapping`
+# to serialize the `Hash(K, V)` values elements with the custom converter.
+#
+# ```
+# require "yaml"
+#
+# class Timestamp
+#   YAML.mapping({
+#     values: {type: Hash(String, Time), converter: YAML::HashValueConverter(Time::EpochConverter)},
+#   })
+# end
+#
+# timestamp = Timestamp.from_yaml(%({"values":{"foo":1459859781,"bar":1567628762}}))
+# timestamp.values  # => {"foo" => 2016-04-05 12:36:21 UTC, "bar" => 2019-09-04 20:26:02 UTC)}
+# timestamp.to_yaml # => "---\nvalues:\n  foo: 1459859781\n  bar: 1567628762\n"
+# ```
+module YAML::HashValueConverter(Converter)
+  def self.to_yaml(values : Hash, yaml : YAML::Nodes::Builder)
+    yaml.mapping(reference: self) do
+      values.each do |key, value|
+        key.to_yaml(yaml)
+        Converter.to_yaml(value, yaml)
+      end
+    end
+  end
+end
+
 struct Slice
   def to_yaml(yaml : YAML::Nodes::Builder)
     {% if T != UInt8 %}
